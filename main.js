@@ -6,6 +6,11 @@ const character={
   damageHP:100,
   elHP:document.getElementById('health-character'),
   elProgressBar:document.getElementById('progressbar-character'),
+
+  renderHP,
+  renderHPLife,
+  renderProgressBarHP,
+  changeHP
 }
 const enemy={
   name: 'Charmander',
@@ -13,46 +18,54 @@ const enemy={
   damageHP:100,
   elHP:document.getElementById('health-enemy'),
   elProgressBar:document.getElementById('progressbar-enemy'),
+  
+  renderHP,
+  renderHPLife,
+  renderProgressBarHP,
+  changeHP
 }
-$btn.addEventListener('click', function(){
-  console.log('Kick');
-  changeHP(random(20),character);
-  changeHP(random(20),enemy);
-});
-$btnUlta.addEventListener('click', function(){
-  console.log('Kick');
-  changeHP(random(50),character);
-  changeHP(random(50),enemy);
-});
-function init(){
-  console.log('Start Game');
-  renderHP(character);
-  renderHP(enemy);
+
+function renderHP() {
+  this.renderHPLife();
+  this.renderProgressBarHP();
 }
-function renderHP(person) {
-  renderHPLife(person);
-  renderProgressBarHP(person);
+function renderHPLife() {
+  this.elHP.innerText=this.damageHP+'/'+this.defaultHP;
 }
-function renderHPLife(person) {
-  person.elHP.innerText=person.damageHP+'/'+person.defaultHP;
+function renderProgressBarHP() {
+  this.elProgressBar.style.width=this.damageHP+'%';
 }
-function renderProgressBarHP(person) {
-  person.elProgressBar.style.width=person.damageHP+'%';
+function random(num) {
+  return Math.ceil(Math.random()*num);
 }
-function changeHP(count, person) {
-  if(person.damageHP <count){
-    person.damageHP=0;
-    alert("Бедный "+person.name+" проиграл бой!");
+
+function changeHP(count) {
+  if(this.damageHP <count){
+    this.damageHP=0;
+    alert("Бедный "+this.name+" проиграл бой!");
     $btn.disabled=true;
     $btnUlta.disabled=true;
   }
   else{
-    person.damageHP-= count;
+    this.damageHP-= count;
   }
-  renderHP(person);
+  this.renderHP();
 }
-function random(num) {
-  return Math.ceil(Math.random()*num);
+$btn.addEventListener('click', function(){
+  console.log('Kick');
+  character.changeHP(random(20));
+  enemy.changeHP(random(20));
+});
+$btnUlta.addEventListener('click', function(){
+  console.log('Kick');
+  character.changeHP(random(50));
+  enemy.changeHP(random(50));
+});
+
+function init(){
+  console.log('Start Game');
+  character.renderHP();
+  enemy.renderHP();
 }
 init();
 
